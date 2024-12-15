@@ -6,7 +6,21 @@
 % Atenção: não deves copiar nunca os puzzles para o teu ficheiro de código
 % Segue-se o código
 
-visualiza([]) :- !.
-visualiza([H | T]) :-
+visualiza(Lista) :-
+  is_list(Lista),
+  escreve_lista(Lista).
+
+escreve_lista([]).
+escreve_lista([H|T]) :-
   writeln(H),
-  visualiza(T).
+  escreve_lista(T).
+
+visualizaLinha(Lista) :-
+  is_list(Lista),      
+  print_index(Lista, 1). 
+
+print_index([], _).
+print_index([H|T], N) :-
+  format('~d: ~w~n', [N, H]),
+  N1 is N + 1,               
+  print_index(T, N1).
