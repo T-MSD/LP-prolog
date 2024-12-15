@@ -6,7 +6,7 @@
 % Atenção: não deves copiar nunca os puzzles para o teu ficheiro de código
 % Segue-se o código
 
-visuliza([]) :- !.
-visuliza([H | T]) :-
+visualiza([]) :- !.
+visualiza([H | T]) :-
   writeln(H),
-  visuliza(T).
+  visualiza(T).
