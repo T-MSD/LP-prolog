@@ -32,13 +32,13 @@ insereObjecto((L, C), Tabuleiro, Obj) :-
   Element = Obj.                    
 insereObjecto(_, _, _).
 
+
+% Insere Varios Objetos
 equal_length(L1, L2) :-
   length(L1, Size1),
   length(L2, Size2),
   Size1 =:= Size2.
 
-
-% Insere Varios Objetos
 insereVariosObjectos(ListaCoords, Tabuleiro, ListaObjs) :-
   equal_length(ListaCoords, ListaObjs),
   insereVariosObjectosAux(ListaCoords, Tabuleiro, ListaObjs).
@@ -49,5 +49,43 @@ insereVariosObjectosAux([Coord | RestoCoord], Tabuleiro, [Obj | RestoObj]) :-
   insereVariosObjectosAux(RestoCoord, Tabuleiro, RestoObj).
 
 
+% Insere Pontos
+inserePontos(_, []) :- !.
+inserePontos(Tabuleiro, [(L, C) | T]) :-
+  nth1(L, Tabuleiro, Linha),
+  nth1(C, Linha, Element),
+  var(Element),                                
+  Element = 'p',                   
+  inserePontos(Tabuleiro, T), !.
+inserePontos(Tabuleiro, [_ | T]) :-
+  inserePontos(Tabuleiro, T), !.
+
+
 % Insere Pontos à volta
 inserePontosVolta(Tabuleiro, (L, C)) :-
+  Top_left_x is L - 1,
+  Top_left_y is C - 1,
+
+  Top_mid_x is L - 1,
+  Top_mid_y is C,
+  
+  Top_right_x is L - 1,
+  Top_right_y is C + 1,
+
+  Mid_left_x is L,
+  Mid_left_y is C - 1,
+
+  Mid_right_x is L,
+  Mid_right_y is C + 1,
+
+  Bottom_left_x is L + 1,
+  Bottom_left_y is C - 1,
+
+  Bottom_mid_x is L + 1,
+  Bottom_mid_y is C,
+
+  Bottom_right_x is L + 1,
+  Bottom_right_y is C + 1,
+
+  Array = [(Top_left_x, Top_left_y), (Top_mid_x, Top_mid_y), (Top_right_x, Top_right_y), (Mid_left_x, Mid_left_y), (Mid_right_x, Mid_right_y), (Bottom_left_x, Bottom_left_y), (Bottom_mid_x, Bottom_mid_y), (Bottom_right_x, Bottom_right_y)],
+  inserePontos(Tabuleiro, Array).
