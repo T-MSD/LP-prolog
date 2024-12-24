@@ -89,3 +89,14 @@ inserePontosVolta(Tabuleiro, (L, C)) :-
 
   Array = [(Top_left_x, Top_left_y), (Top_mid_x, Top_mid_y), (Top_right_x, Top_right_y), (Mid_left_x, Mid_left_y), (Mid_right_x, Mid_right_y), (Bottom_left_x, Bottom_left_y), (Bottom_mid_x, Bottom_mid_y), (Bottom_right_x, Bottom_right_y)],
   inserePontos(Tabuleiro, Array).
+
+
+% Objetos em Coordenadas
+objectosEmCoordenadas([], _, []).
+objectosEmCoordenadas([(L, C) | T], Tabuleiro, [Obj | RestoObj]) :-
+  nth1(L, Tabuleiro, Linha),
+  nth1(C, Linha, Element),
+  Element = Obj,
+  objectosEmCoordenadas(T, Tabuleiro, RestoObj).
+
+% coordObjectos(Obj, Tabuleiro, [(L_Coord, C_Coord) | RestoCoords], [(L_Obj, C_Obj) | RestoObjs], NumObj) :-
