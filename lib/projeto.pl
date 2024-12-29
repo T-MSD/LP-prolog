@@ -104,8 +104,7 @@ objectosEmCoordenadas([(L, C) | T], Tabuleiro, [Obj | RestoObj]) :-
 coordObjectos(_, _, [], [], 0) :- !.
 coordObjectos(_, _, [], Resto, _) :-
   sort(Resto, RestoOrdenado),
-  Resto = RestoOrdenado,
-  !.
+  Resto = RestoOrdenado, !.
 
 coordObjectos(Obj, Tabuleiro, [(L,C) | T], [(L,C) | Resto], NumObjectos) :-
   nth1(L, Tabuleiro, Linha),
@@ -124,3 +123,14 @@ coordObjectos(Obj, Tabuleiro, [(L,C) | T], [(L,C) | Resto], NumObjectos) :-
 
 coordObjectos(Obj, Tabuleiro, [_ | T], Resto, NumObjectos) :-
   coordObjectos(Obj, Tabuleiro, T, Resto, NumObjectos), !.
+
+
+% Coordenadas Vars
+coordenadasVars(Tabuleiro, ListaVars) :-
+  findall((L, C), coordenadaVariavel(Tabuleiro, L, C), ListaVars),
+  sort(ListaVars, ListaVars).
+
+coordenadaVariavel(Tabuleiro, L, C) :-
+  nth1(L, Tabuleiro, Linha),
+  nth1(C, Linha, Elem),
+  var(Elem).
