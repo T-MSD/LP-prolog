@@ -99,4 +99,28 @@ objectosEmCoordenadas([(L, C) | T], Tabuleiro, [Obj | RestoObj]) :-
   Element = Obj,
   objectosEmCoordenadas(T, Tabuleiro, RestoObj).
 
-% coordObjectos(Obj, Tabuleiro, [(L_Coord, C_Coord) | RestoCoords], [(L_Obj, C_Obj) | RestoObjs], NumObj) :-
+
+% Coordenadas Objetos
+coordObjectos(_, _, [], [], 0) :- !.
+coordObjectos(_, _, [], Resto, _) :-
+  sort(Resto, RestoOrdenado),
+  Resto = RestoOrdenado,
+  !.
+
+coordObjectos(Obj, Tabuleiro, [(L,C) | T], [(L,C) | Resto], NumObjectos) :-
+  nth1(L, Tabuleiro, Linha),
+  nth1(C, Linha, Element),
+  Element == Obj,
+  coordObjectos(Obj, Tabuleiro, T, Resto, UpdatedNum),
+  NumObjectos is UpdatedNum + 1, !.
+
+coordObjectos(Obj, Tabuleiro, [(L,C) | T], [(L,C) | Resto], NumObjectos) :-
+  var(Obj),
+  nth1(L, Tabuleiro, Linha),
+  nth1(C, Linha, Element),
+  var(Element),
+  coordObjectos(Obj, Tabuleiro, T, Resto, UpdatedNum),
+  NumObjectos is UpdatedNum + 1, !.
+
+coordObjectos(Obj, Tabuleiro, [_ | T], Resto, NumObjectos) :-
+  coordObjectos(Obj, Tabuleiro, T, Resto, NumObjectos), !.
