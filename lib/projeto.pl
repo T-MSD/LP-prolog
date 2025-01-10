@@ -132,5 +132,48 @@ coordenadasVars(Tabuleiro, ListaVars) :-
 
 coordenadaVariavel(Tabuleiro, L, C) :-
   nth1(L, Tabuleiro, Linha),
-  nth1(C, Linha, Elem),
-  var(Elem).
+  nth1(C, Linha, Element),
+  var(Element).
+
+
+% Fecha Lista Coordenadas
+% H1
+fechaListaCoordenadas_H1(_, []) :- !.
+fechaListaCoordenadas_H1(Tabuleiro, [(L,C) | T]) :-
+  insereObjecto((L,C), Tabuleiro, 'p'),
+  fechaListaCoordenadas_H1(Tabuleiro, T).
+
+% H2 e H3
+fechaListaCoordenadas_H2_3(_, []) :- !.
+fechaListaCoordenadas_H2_3(Tabuleiro, [(L,C) | T]) :-
+  insereObjecto((L,C), Tabuleiro, 'e'),
+  inserePontosVolta(Tabuleiro, (L,C)),
+  fechaListaCoordenadas_H2_3(Tabuleiro, T).
+
+fechaListaCoordenadas(Tabuleiro, Lista) :-
+  coordObjectos('e', Tabuleiro, Lista, _, N),
+  N == 2,
+  coordObjectos(_, Tabuleiro, Lista, LCO, _),
+  fechaListaCoordenadas_H1(Tabuleiro, LCO), !.
+
+fechaListaCoordenadas(Tabuleiro, Lista) :-
+  coordObjectos('e', Tabuleiro, Lista, _, N1),
+  coordObjectos(_, Tabuleiro, Lista, LCO, N2),
+  N1 == 1,
+  N2 == 1,
+  fechaListaCoordenadas_H2_3(Tabuleiro, LCO), !.
+
+fechaListaCoordenadas(Tabuleiro, Lista) :-
+  coordObjectos('e', Tabuleiro, Lista, _, N1),
+  coordObjectos(_, Tabuleiro, Lista, LCO, N2),
+  N1 == 0,
+  N2 == 2,
+  fechaListaCoordenadas_H2_3(Tabuleiro, LCO), !.
+
+fechaListaCoordenadas(_, _) :- !.
+
+% Fecha
+fecha(_, []) :- !.
+fecha(Tabuleiro, [H | T]) :-
+  fechaListaCoordenadas(Tabuleiro, H),
+  fecha(Tabuleiro, T).
