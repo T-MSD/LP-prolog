@@ -6,25 +6,26 @@
 % Atenção: não deves copiar nunca os puzzles para o teu ficheiro de código
 % Segue-se o código
 
-% Visualiza
+% Visualiza/1: Escreve por linha cada elemento da lista
 visualiza([]).
 visualiza([H|T]) :-
   writeln(H),
   visualiza(T). 
 
 
-% Visualiza Linha
+% VisualizaLinha/1: Escreve por linha o número da linha e o elemento 
 visualizaLinha(Lista) :-      
-  print_index(Lista, 1). 
+  printIndex(Lista, 1). 
 
-print_index([], _).
-print_index([H|T], N) :-
+% printIndex/2: Define o formato e printa o número da linha
+printIndex([], _).
+printIndex([H|T], N) :-
   format('~d: ~w~n', [N, H]),
   N1 is N + 1,               
-  print_index(T, N1).
+  printIndex(T, N1).
 
 
-% Insere Objeto
+% insereObjeto/3: Insere o objeto 'Obj' nas coordenadas (l, C)
 insereObjecto((L, C), Tabuleiro, Obj) :-
   nth1(L, Tabuleiro, Linha),
   nth1(C, Linha, Element),
@@ -33,23 +34,27 @@ insereObjecto((L, C), Tabuleiro, Obj) :-
 insereObjecto(_, _, _).
 
 
-% Insere Varios Objetos
-equal_length(L1, L2) :-
+% verificaCompriemnto/2: Verifica se o comprimento das listas é igual
+verificaComprimento(L1, L2) :-
   length(L1, Size1),
   length(L2, Size2),
   Size1 =:= Size2.
 
+% insereVariosObjetos/3: Insere os objetos da ListaObjs nas coordenadas 
+% da lista ListaCoords
 insereVariosObjectos(ListaCoords, Tabuleiro, ListaObjs) :-
-  equal_length(ListaCoords, ListaObjs),
+  verificaComprimento(ListaCoords, ListaObjs),
   insereVariosObjectosAux(ListaCoords, Tabuleiro, ListaObjs).
 
+% insereVariosObjectosAux/2: Função auxiliar que itera pelas lista 
+% e insere os objetos
 insereVariosObjectosAux([], _, []).
 insereVariosObjectosAux([Coord | RestoCoord], Tabuleiro, [Obj | RestoObj]) :-
   insereObjecto(Coord, Tabuleiro, Obj),
   insereVariosObjectosAux(RestoCoord, Tabuleiro, RestoObj).
 
 
-% Insere Pontos
+% inserePontos/2: Aplica pontos em todas as variáveis da lista
 inserePontos(_, []) :- !.
 inserePontos(Tabuleiro, [(L, C) | T]) :-
   nth1(L, Tabuleiro, Linha),
@@ -61,7 +66,8 @@ inserePontos(Tabuleiro, [_ | T]) :-
   inserePontos(Tabuleiro, T), !.
 
 
-% Insere Pontos à volta
+% inserePontosVolta/2: Insere pontos nas 8 posições adjacentes à coordenada 
+% (L, C)
 inserePontosVolta(Tabuleiro, (L, C)) :-
   Top_left_x is L - 1,
   Top_left_y is C - 1,
@@ -87,11 +93,16 @@ inserePontosVolta(Tabuleiro, (L, C)) :-
   Bottom_right_x is L + 1,
   Bottom_right_y is C + 1,
 
-  Array = [(Top_left_x, Top_left_y), (Top_mid_x, Top_mid_y), (Top_right_x, Top_right_y), (Mid_left_x, Mid_left_y), (Mid_right_x, Mid_right_y), (Bottom_left_x, Bottom_left_y), (Bottom_mid_x, Bottom_mid_y), (Bottom_right_x, Bottom_right_y)],
+  Array = [
+    (Top_left_x, Top_left_y), (Top_mid_x, Top_mid_y), 
+    (Top_right_x, Top_right_y), (Mid_left_x, Mid_left_y), 
+    (Mid_right_x, Mid_right_y), (Bottom_left_x, Bottom_left_y), 
+    (Bottom_mid_x, Bottom_mid_y), (Bottom_right_x, Bottom_right_y)],
   inserePontos(Tabuleiro, Array).
 
 
-% Objetos em Coordenadas
+% objetosEmCOordenadas/3: Verifica se o objeto das coordenads (L, C) 
+% é igual a Obj para todos os elementos daa lista
 objectosEmCoordenadas([], _, []).
 objectosEmCoordenadas([(L, C) | T], Tabuleiro, [Obj | RestoObj]) :-
   nth1(L, Tabuleiro, Linha),
@@ -100,7 +111,7 @@ objectosEmCoordenadas([(L, C) | T], Tabuleiro, [Obj | RestoObj]) :-
   objectosEmCoordenadas(T, Tabuleiro, RestoObj).
 
 
-% Coordenadas Objetos
+% coordObjetos/5: Guarda as coordenadas da lista que contêm objetos do tipo Obj
 coordObjectos(_, _, [], [], 0) :- !.
 coordObjectos(_, _, [], Resto, _) :-
   sort(Resto, RestoOrdenado),
@@ -125,31 +136,47 @@ coordObjectos(Obj, Tabuleiro, [_ | T], Resto, NumObjectos) :-
   coordObjectos(Obj, Tabuleiro, T, Resto, NumObjectos), !.
 
 
-% Coordenadas Vars
+% coordenadasVars/2: É verdade se ListaVars for a lista com as coordenadas das 
+% variáveis do tabuleiro
 coordenadasVars(Tabuleiro, ListaVars) :-
   findall((L, C), coordenadaVariavel(Tabuleiro, L, C), ListaVars),
   sort(ListaVars, ListaVars).
 
+% coordenadaVariavel/3: Verifica se existe uma variável na coordenada (L, C)
 coordenadaVariavel(Tabuleiro, L, C) :-
   nth1(L, Tabuleiro, Linha),
   nth1(C, Linha, Element),
   var(Element).
 
 
-% Fecha Lista Coordenadas
-% H1
+% fechaListaCoordenadas_H1/2: Função auxiliar para fechaListaCoordenadas
+% Insere pontos na coordenadas da lista
 fechaListaCoordenadas_H1(_, []) :- !.
 fechaListaCoordenadas_H1(Tabuleiro, [(L,C) | T]) :-
   insereObjecto((L,C), Tabuleiro, 'p'),
   fechaListaCoordenadas_H1(Tabuleiro, T).
 
-% H2 e H3
+% fechaListaCoordenadas_H2_3/2: Função auxiliar para fechaListaCoordenadas
+% Por cada coordenada insere uma estrela em (L, C) e pontos à volta
 fechaListaCoordenadas_H2_3(_, []) :- !.
 fechaListaCoordenadas_H2_3(Tabuleiro, [(L,C) | T]) :-
   insereObjecto((L,C), Tabuleiro, 'e'),
   inserePontosVolta(Tabuleiro, (L,C)),
   fechaListaCoordenadas_H2_3(Tabuleiro, T).
 
+% h1: sempre que a linha, coluna ou região associada à lista de coordenadas 
+% tiver 2 duas estrelas, enche as restantes coordenadas de pontos;
+
+% h2: sempre que a linha, coluna ou região associada à lista de coordenadas 
+% tiver uma única estrela e uma única posição livre, insere uma estrela 
+% na posição livre e insere pontos à volta da estrela;
+
+% h3: sempre que a linha, coluna ou região associada à lista de coordenadas 
+% não tiver nenhuma estrela e tiver duas únicas posições livres, 
+% insere uma estrela em cada posição livre e insere pontos à volta 
+% de cada estrela inserida;
+
+% fechaListaCoordenadas/2: Aplica h1, h2 e h3
 fechaListaCoordenadas(Tabuleiro, Lista) :-
   coordObjectos('e', Tabuleiro, Lista, _, N),
   N == 2,
@@ -172,19 +199,21 @@ fechaListaCoordenadas(Tabuleiro, Lista) :-
 
 fechaListaCoordenadas(_, _) :- !.
 
-% Fecha
+
+% fecha/2: Aplica fechaListaCoordenadas nas listas da ListaListasCoord
 fecha(_, []) :- !.
 fecha(Tabuleiro, [H | T]) :-
   fechaListaCoordenadas(Tabuleiro, H),
   fecha(Tabuleiro, T).
 
 
-% Encontra Sequencia
-checkVars(_, []) :- !.
-checkVars(Tabuleiro, [(L, C) | T]) :-
+% checkVar/2: Verifica se todos os conjuntos de coordenadas contêm uma variável
+checkVar(_, []) :- !.
+checkVar(Tabuleiro, [(L, C) | T]) :-
   coordenadaVariavel(Tabuleiro, L, C),
-  checkVars(Tabuleiro, T).
+  checkVar(Tabuleiro, T).
 
+% verificaForaSeq/2: Verifica as posições antes e depois de Seq
 verificaForaSeq(_, []) :- !.
 verificaForaSeq(Tabuleiro, [(L, C) | T]) :-
   nth1(L, Tabuleiro, Linha),
@@ -192,20 +221,22 @@ verificaForaSeq(Tabuleiro, [(L, C) | T]) :-
   Element == 'p',
   verificaForaSeq(Tabuleiro, T).
 
+% encontraSequencia/4: Encontra uma sequência de variáveis 
+% de tamanho N em ListaCoords
 encontraSequencia(Tabuleiro, N, ListaCoords, Seq) :-
   length(ListaCoords, Size),
   Size >= N,
   length(Seq, N),
   append(PreSeq, T, ListaCoords),
   append(Seq, PosSeq, T),
-  checkVars(Tabuleiro, Seq),
+  checkVar(Tabuleiro, Seq),
   verificaForaSeq(Tabuleiro, PreSeq),
   verificaForaSeq(Tabuleiro, PosSeq), !.
 
 encontraSequencia(_, _, _, _) :- fail, !.
 
 
-% Aplica Padrao I
+% verifica_I_horizontal/3: Verifica se as coordenadas formam uma linha
 verifica_I_horizontal((L1, C1), (L2, C2), (L3, C3)) :-
   L1 == L2,
   L1 == L3,
@@ -214,6 +245,7 @@ verifica_I_horizontal((L1, C1), (L2, C2), (L3, C3)) :-
   C2 == A,
   C3 == B.
 
+% verifica_I_ve=ertical/3: Verifica se as coordenadas formam uma coluna
 verifica_I_vertical((L1, C1), (L2, C2), (L3, C3)) :-
   A is L1 + 1,
   B is L2 + 1,
@@ -222,6 +254,8 @@ verifica_I_vertical((L1, C1), (L2, C2), (L3, C3)) :-
   C1 == C2,
   C1 == C3.
 
+% aplicaPadraoI/2: Coloca estrelas nas coordendas (L1, C1) e 
+% (L3, C3) e pontos em volta
 aplicaPadraoI(Tabuleiro, [(L1, C1), (L2, C2), (L3, C3)]) :-
   verifica_I_horizontal((L1, C1), (L2, C2), (L3, C3)),
   insereObjecto((L1, C1), Tabuleiro, 'e'),
@@ -237,7 +271,7 @@ aplicaPadraoI(Tabuleiro, [(L1, C1), (L2, C2), (L3, C3)]) :-
   inserePontosVolta(Tabuleiro, (L3, C3)), !.
 
 
-% Aplica Padroes
+% aplicaPadroes/2: Aplica os Padrões I e T a cada lista de coordenadas
 aplicaPadroes(_, []) :- !.
 aplicaPadroes(Tabuleiro, [H | T]) :-
   encontraSequencia(Tabuleiro, 3, H, Seq),
