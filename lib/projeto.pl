@@ -235,3 +235,19 @@ aplicaPadraoI(Tabuleiro, [(L1, C1), (L2, C2), (L3, C3)]) :-
   insereObjecto((L3, C3), Tabuleiro, 'e'),
   inserePontosVolta(Tabuleiro, (L1, C1)),
   inserePontosVolta(Tabuleiro, (L3, C3)), !.
+
+
+% Aplica Padroes
+aplicaPadroes(_, []) :- !.
+aplicaPadroes(Tabuleiro, [H | T]) :-
+  encontraSequencia(Tabuleiro, 3, H, Seq),
+  aplicaPadraoI(Tabuleiro, Seq),
+  aplicaPadroes(Tabuleiro, T).
+
+aplicaPadroes(Tabuleiro, [H | T]) :-
+  encontraSequencia(Tabuleiro, 4, H, Seq),
+  aplicaPadraoT(Tabuleiro, Seq),
+  aplicaPadroes(Tabuleiro, T).
+
+aplicaPadroes(Tabuleiro, [_ | T]) :-
+  aplicaPadroes(Tabuleiro, T).
