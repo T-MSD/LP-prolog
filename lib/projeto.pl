@@ -179,6 +179,32 @@ fecha(Tabuleiro, [H | T]) :-
   fecha(Tabuleiro, T).
 
 
+% Encontra Sequencia
+checkVars(_, []) :- !.
+checkVars(Tabuleiro, [(L, C) | T]) :-
+  coordenadaVariavel(Tabuleiro, L, C),
+  checkVars(Tabuleiro, T).
+
+verificaForaSeq(_, []) :- !.
+verificaForaSeq(Tabuleiro, [(L, C) | T]) :-
+  nth1(L, Tabuleiro, Linha),
+  nth1(C, Linha, Element),
+  Element == 'p',
+  verificaForaSeq(Tabuleiro, T).
+
+encontraSequencia(Tabuleiro, N, ListaCoords, Seq) :-
+  length(ListaCoords, Size),
+  Size >= N,
+  length(Seq, N),
+  append(PreSeq, T, ListaCoords),
+  append(Seq, PosSeq, T),
+  checkVars(Tabuleiro, Seq),
+  verificaForaSeq(Tabuleiro, PreSeq),
+  verificaForaSeq(Tabuleiro, PosSeq), !.
+
+encontraSequencia(_, _, _, _) :- fail, !.
+
+
 % Aplica Padrao I
 verifica_I_horizontal((L1, C1), (L2, C2), (L3, C3)) :-
   L1 == L2,
