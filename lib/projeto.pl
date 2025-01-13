@@ -177,3 +177,35 @@ fecha(_, []) :- !.
 fecha(Tabuleiro, [H | T]) :-
   fechaListaCoordenadas(Tabuleiro, H),
   fecha(Tabuleiro, T).
+
+
+% Aplica Padrao I
+verifica_I_horizontal((L1, C1), (L2, C2), (L3, C3)) :-
+  L1 == L2,
+  L1 == L3,
+  A is C1 + 1,
+  B is C2 + 1,
+  C2 == A,
+  C3 == B.
+
+verifica_I_vertical((L1, C1), (L2, C2), (L3, C3)) :-
+  A is L1 + 1,
+  B is L2 + 1,
+  L2 == A,
+  L3 == B,
+  C1 == C2,
+  C1 == C3.
+
+aplicaPadraoI(Tabuleiro, [(L1, C1), (L2, C2), (L3, C3)]) :-
+  verifica_I_horizontal((L1, C1), (L2, C2), (L3, C3)),
+  insereObjecto((L1, C1), Tabuleiro, 'e'),
+  insereObjecto((L3, C3), Tabuleiro, 'e'),
+  inserePontosVolta(Tabuleiro, (L1, C1)),
+  inserePontosVolta(Tabuleiro, (L3, C3)), !.
+
+aplicaPadraoI(Tabuleiro, [(L1, C1), (L2, C2), (L3, C3)]) :-
+  verifica_I_vertical((L1, C1), (L2, C2), (L3, C3)),
+  insereObjecto((L1, C1), Tabuleiro, 'e'),
+  insereObjecto((L3, C3), Tabuleiro, 'e'),
+  inserePontosVolta(Tabuleiro, (L1, C1)),
+  inserePontosVolta(Tabuleiro, (L3, C3)), !.
